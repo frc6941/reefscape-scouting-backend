@@ -12,8 +12,10 @@ import Image from "next/image";
 
 import reefSideView from "../public/reef-side-view.jpg";
 import Counter from "@/app/components/counter";
+import Textarea from "@/app/components/textarea";
 
 const matchTypes = ["Practice", "Qualification", "Match", "Final"];
+const stopStatus = ["Park", "Deep Climb", "Shallow Climb", "Failed", "Played Defense"];
 
 const schema = yup
   .object({
@@ -61,6 +63,10 @@ const schema = yup
         processor: yup.number().default(0).min(0).required(),
         dropOrMiss: yup.number().default(0).min(0).required(),
       }).required()
+    }),
+    endAndAfterGame: yup.object({
+      stopStatus: yup.string().oneOf(stopStatus).required(),
+      comments: yup.string().required()
     })
   })
   .required();
@@ -207,8 +213,11 @@ export default function Home() {
           </div>
         </div>
       </Step>
-      <Step<FormData> fields="autoStart" description="End & After Game">
-        <Input<FormData> placeholder="Enter team number" label="Team Number" name="autoStart.test" error={errors.autoStart?.test?.message}/>
+      <Step<FormData> fields="endAndAfterGame" description="End & After Game">
+        <div className="flex flex-col space-y-5">
+          <Select<FormData> className="w-64" label="Stop Status" placeholder="Select stop status" name="endAndAfterGame.stopStatus" options={matchTypes} error={errors.endAndAfterGame?.stopStatus?.message}></Select>
+          <Textarea<FormData> placeholder="Enter comments" label="Comments" name="endAndAfterGame.comments" error={errors.autoStart?.test?.message}/>
+        </div>
       </Step>
     </StepForm>
   );
