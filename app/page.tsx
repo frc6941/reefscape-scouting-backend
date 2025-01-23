@@ -1,101 +1,64 @@
-import Image from "next/image";
+"use client";
+
+import StepForm from "@/app/components/step-form";
+import Step from "@/app/components/step";
+import * as yup from "yup"
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import Input from "@/app/components/input";
+import AllianceSelect from "@/app/components/alliance-select";
+import Select from "@/app/components/select";
+
+const matchTypes = ["Practice", "Qualification", "Match", "Final"];
+
+const schema = yup
+  .object({
+    gameStart: yup.object({
+      matchType: yup.string().oneOf(matchTypes).required('Match Type is required'),
+      matchNumber: yup
+        .number()
+        .min(0, 'Match Number should not be less than 0.')
+        .typeError('Match Number must be a number')
+        .required('Match Number is required.'),
+      alliance: yup.string().oneOf(["red", "blue"]).required('Alliance is required.'),
+    }).required(),
+    autoStart: yup.object({
+      test: yup.string().required('Test is required.'),
+    })
+  })
+  .required();
+
+type FormData = yup.InferType<typeof schema>;
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const methods = useForm({
+    resolver: yupResolver(schema),
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+
+  return (
+    <StepForm className="mt-20 mx-52" methods={methods}>
+      <Step<FormData> fields="gameStart" description="Game Start">
+        <div className="flex gap-5">
+          <Select<FormData> className="w-64" label="Match Type" placeholder="Select match type" name="gameStart.matchType" options={matchTypes} error={errors.gameStart?.matchType?.message}></Select>
+          <Input<FormData> className="w-64" placeholder="Enter match number" label="Match Number" name="gameStart.matchNumber" error={errors.gameStart?.matchNumber?.message}/>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <Input<FormData> className="w-64 mt-5" placeholder="Enter team number" label="Team Number" name="gameStart.matchNumber" error={errors.gameStart?.matchNumber?.message}/>
+        <AllianceSelect<FormData> className="mt-5" name="gameStart.alliance" label="Alliance" error={errors.gameStart?.alliance?.message}></AllianceSelect>
+      </Step>
+      <Step<FormData> fields="autoStart" description="Auto Start">
+        <Input<FormData> placeholder="Enter team number" label="Team Number" name="autoStart.test" error={errors.autoStart?.test?.message}/>
+      </Step>
+      <Step<FormData> fields="autoStart" description="Auto Start">
+        <Input<FormData> placeholder="Enter team number" label="Team Number" name="autoStart.test" error={errors.autoStart?.test?.message}/>
+      </Step>
+      <Step<FormData> fields="autoStart" description="Auto Start">
+        <Input<FormData> placeholder="Enter team number" label="Team Number" name="autoStart.test" error={errors.autoStart?.test?.message}/>
+      </Step>
+    </StepForm>
   );
 }
