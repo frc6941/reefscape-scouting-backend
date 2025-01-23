@@ -16,12 +16,11 @@ const StepForm = <T extends FieldValues,>({ children, onSubmit, className, metho
   const steps = React.Children.toArray(children) as ReactElement<StepProps<T>, typeof Step>[];
   const { trigger } = methods;
 
-  const handleNext = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleNext = async () => {
     const isValid = await trigger(steps[currentStep].props.fields);
     if (isValid) {
       setCurrentStep((prev) => prev + 1);
     }
-    e.preventDefault();
   }
 
   return (
@@ -36,6 +35,7 @@ const StepForm = <T extends FieldValues,>({ children, onSubmit, className, metho
 
         <div className="flex justify-between mt-4">
           <button
+            type="button"
             className="px-4 py-2 bg-gray-500 text-white rounded"
             disabled={currentStep === 0}
             onClick={() => setCurrentStep(currentStep - 1)}
@@ -44,9 +44,10 @@ const StepForm = <T extends FieldValues,>({ children, onSubmit, className, metho
           </button>
 
           <button
+            type="button"
             className="px-4 py-2 bg-blue-500 text-white rounded"
             disabled={currentStep === steps.length - 1}
-            onClick={(e) => handleNext(e)}
+            onClick={() => handleNext()}
           >
             Next
           </button>

@@ -32,7 +32,6 @@ const Select = <T extends FieldValues,>({ name, options, placeholder, label, cla
       <div onClick={() => setShowOptions(!showOptions)} className="cursor-pointer block w-full mt-1 rounded-md bg-black px-3 py-1.5 text-base text-white border-[1px] border-gray-800">
         <p>{field.value || placeholder}</p>
       </div>
-      {error && <p className="text-red-700 mt-2">{error}</p>}
       { showOptions && (
         <ul className="absolute block mt-1 w-full rounded-md bg-black px-2 py-1 text-base text-white border-[1px] border-gray-800">
           {options.map((option) => (
@@ -45,6 +44,7 @@ const Select = <T extends FieldValues,>({ name, options, placeholder, label, cla
           ))}
         </ul>
       ) }
+      {error && <p className="text-red-700 mt-2">{error}</p>}
     </div>
   );
 };
