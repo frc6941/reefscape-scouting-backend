@@ -31,7 +31,7 @@ const StepForm = <T extends FieldValues,>({ children, onSubmit, className, metho
             <StepVisual key={index} step={index} description={step.props.description} enable={index <= currentStep}/>
           ))
         }</div>
-        <div className="mt-5">{(steps.map((step, index) => (index == currentStep && step)))}</div>
+        <div className="mt-8">{(steps.map((step, index) => (index == currentStep && step)))}</div>
 
         <div className="flex justify-between mt-4">
           <button
